@@ -32,48 +32,37 @@ public class Controller implements Initializable {
             System.out.println("Connection to server successful:)");
             clientInput = new DataInputStream(clientSocket.getInputStream());
             clientOutput = new DataOutputStream(clientSocket.getOutputStream());
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+            new Thread(() -> {
+                try {
                     while (true) {
-                        String inputMsg = null;
-                        try {
-                            inputMsg = clientInput.readUTF();
-                            if(inputMsg.equals("")) continue;
-                            textArea.appendText(inputMsg);
+                        String inputMsg = clientInput.readUTF();
+                        if (inputMsg.equals("")) continue;
+                        textArea.appendText(inputMsg);
+                        textArea.appendText("\n");
+                        if (inputMsg.equals("Echo : /end")) {
+                            textArea.appendText("Connection has been closed by your command.");
                             textArea.appendText("\n");
-                            if(inputMsg.equals("Echo : /end")){
-                                textArea.appendText("Connection has been closed by your command.");
-                                textArea.appendText("\n");
-                                clientSocket.close();
-                                break;
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            clientSocket.close();
+                            break;
                         }
-
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }).start();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void sendMessage() {
-//        textField.requestFocus();
-//        String message = textField.getCharacters().toString().trim();
-//        textArea.appendText(message + "\n");
-//        textField.clear();
         try {
             String message = textField.getText().trim();
-            if (message.equals("")){
+            if (message.equals("")) {
                 System.out.println("\n");
                 return;
             }
             clientOutput.writeUTF(message);
-            textArea.appendText(message + "\n");
             textField.clear();
         } catch (IOException e) {
             textField.clear();
