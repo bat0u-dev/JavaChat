@@ -11,7 +11,8 @@ public class JChatServer {
     public JChatServer() {
         try {
             ServerSocket serverSocket = new ServerSocket(8189);
-
+            clientsList = new Vector<>();
+            
             while (true) {
                 System.out.println("Waiting for client's to connect...");
                 Socket socket = serverSocket.accept();
