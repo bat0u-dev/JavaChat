@@ -7,6 +7,7 @@ import java.util.Vector;
 
 public class JChatServer {
     private Vector<ClientHandler> clientsList;
+    int clientCounter = 1;
 
     public JChatServer() {
         try {
@@ -16,12 +17,29 @@ public class JChatServer {
             while (true) {
                 System.out.println("Waiting for client's to connect...");
                 Socket socket = serverSocket.accept();
-                new ClientHandler(socket);
+                ClientHandler processedClient = new ClientHandler(this,socket,clientCounter);
+                System.out.println("Client " + clientCounter + " has been connected...");
+                clientCounter++;
+                subscribe(processedClient);
             }
 
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void subscribe(ClientHandler processedClient){
+        clientsList.add(processedClient);
+    }
+
+    public void unsubscribe(ClientHandler processedClient){
+        clientsList.remove(processedClient);
+    }
+
+    public void broadcastMessage(String message){
+        for (ClientHandler c: clientsList) {
+            c.sendMsg(message);
         }
     }
 }

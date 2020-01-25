@@ -24,7 +24,7 @@ public class ClientHandler {
                 try {
                     while (true) {
                         String inputMsg = Input.readUTF();
-                        System.out.println(this.clientID + " message :" + inputMsg);
+                        System.out.println("Client " + this.clientID + " message :" + inputMsg);
                         if (inputMsg.equals("/end")) {
                             System.out.println("Client aborted the connection.");
                             Output.writeUTF("Connection has been aborted by client.");
